@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SmartCards - Perfil</title>
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+
+<script src="../js/app.js"></script>
+
+<body>
+    <div class="app-layout">
+
+        <header class="main-header">
+            <div class="search-container">
+                <i class="icon search-icon fas fa-search"></i>
+                <input type="search" placeholder="Buscar mazos, carpetas..." class="search-input">
+            </div>
+
+            <div class="user-actions">
+                <button class="btn btn-premium">
+                    <i class="icon fas fa-star"></i>
+                    <h4>Premium</h4>
+                </button>
+                <a class="btn btn-profile" href="Home.html" style="text-decoration:none;">
+                    <i class="icon fas fa-house"></i>
+                    <h4>Home</h4>
+                </a>
+            </div>
+        </header>
+
+        <aside class="sidebar-nav">
+            <div class="sidebar-top">
+                <div class="sidebar-logo">
+                    <img src="../assets/smartcards.png" alt="SmartCards logo" class="logo-img">
+                    <p class="logo-tagline">Aprende y repasa con tarjetas Smart</p>
+                </div>
+
+                <!--
+                DECK CATEGORIES: Estructura de carpetas que agrupa 
+                los mazos según temática o área de conocimiento.
+                -->
+
+                <nav class="main-navigation">
+                    <a href="Home.html" class="nav-link">
+                        <i class="icon fas fa-home"></i>
+                        Home
+                    </a>
+                    <a href="Perfil.html" class="nav-link active">
+                        <i class="icon fas fa-user"></i>
+                        Perfil
+                    </a>
+                    <div class="nav-separator"></div>
+
+                    <p class="section-title">CARPETAS</p>
+
+                    <details class="nav-folder" open>
+                        <summary class="nav-folder-summary">
+                            <i class="icon fas fa-folder"></i>
+                            Idiomas
+                        </summary>
+
+                        <a href="Deck.html?deck=ingles-i" class="nav-link nav-deck">
+                            <i class="icon fas fa-book"></i>
+                            Idioma: Inglés I
+                        </a>
+                    </details>
+
+                    <details class="nav-folder">
+                        <summary class="nav-folder-summary">
+                            <i class="icon fas fa-folder"></i>
+                            Ciencias
+                        </summary>
+
+                        <div class="nav-link is-disabled">
+                            <i class="icon fas fa-book"></i>
+                            Matemáticas
+                        </div>
+                        <div class="nav-link is-disabled">
+                            <i class="icon fas fa-book"></i>
+                            Biología
+                        </div>
+                    </details>
+
+                    <details class="nav-folder">
+                        <summary class="nav-folder-summary">
+                            <i class="icon fas fa-folder"></i>
+                            Computación
+                        </summary>
+
+                        <div class="nav-link is-disabled">
+                            <i class="icon fas fa-code"></i>
+                            Programación JS
+                        </div>
+                        <div class="nav-link is-disabled">
+                            <i class="icon fas fa-code"></i>
+                            Programación Python
+                        </div>
+                    </details>
+
+                    <details class="nav-folder" open>
+                        <summary class="nav-folder-summary">
+                            <i class="icon fas fa-folder"></i>
+                            Historia y Geo
+                        </summary>
+
+                        <a href="Deck.html?deck=historia-mundial" class="nav-link nav-deck">
+                            <i class="icon fas fa-book"></i>
+                            Historia Mundial
+                        </a>
+                        <div class="nav-link is-disabled">
+                            <i class="icon fas fa-globe"></i>
+                            Geografía
+                        </div>
+                    </details>
+
+                    <div class="nav-separator nav-separator-large"></div>
+
+                    <!--
+                    INSTRUCCIONES DE LOS JUEGOS:
+                    Contenido actualmente deshabilitado.
+                    -->
+
+                    <div class="game-modes-section">
+                        <p class="section-title">INSTRUCCIONES DE JUEGO:</p>
+                        <div class="nav-link is-disabled">
+                            <i class="icon fas fa-grip-vertical"></i>
+                            Juego 1 (Flashcards)
+                        </div>
+                        <div class="nav-link is-disabled">
+                            <i class="icon fas fa-feather"></i>
+                            Juego 2 (Test)
+                        </div>
+                        <div class="nav-link is-disabled">
+                            <i class="icon fas fa-list-ol"></i>
+                            Juego 3 (Definiciones)
+                        </div>
+                    </div>
+                </nav>
+            </div>
+
+            <div class="sidebar-stats">
+                <div class="stat-item-global stat--green">
+                    <div class="stat-icon-global">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-text-global">
+                        <span class="stat-label-global">Tiempo total</span>
+                        <b class="stat-value-global">12h 30m</b>
+                    </div>
+                </div>
+                <div class="stat-item-global stat--pink">
+                    <div class="stat-icon-global">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <div class="stat-text-global">
+                        <span class="stat-label-global">Tarjetas estudiadas</span>
+                        <b class="stat-value-global">248</b>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="app-main-container">
+
+            <section class="study-header-section">
+                <div class="study-info">
+                    <h1 class="main-title">Tu perfil</h1>
+                    <p class="subtitle">Configura tu cuenta y preferencias</p>
+                </div>
+
+                <div class="study-stats-container">
+                    <div class="stat-item-global stat--green">
+                        <div class="stat-icon-global"><i class="fas fa-award"></i></div>
+                        <div class="stat-text-global">
+                            <span class="stat-label-global">Nivel</span>
+                            <b class="stat-value-global">Intermedio</b>
+                        </div>
+                    </div>
+                    <div class="stat-item-global stat--pink">
+                        <div class="stat-icon-global"><i class="fas fa-fire"></i></div>
+                        <div class="stat-text-global">
+                            <span class="stat-label-global">Racha</span>
+                            <b class="stat-value-global">7 días</b>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="main-content-padded">
+                <section class="addcards" style="gap: var(--spacing-md);">
+
+                    <div class="field-card">
+                        <label class="field-label" for="name">Nombre</label>
+                        <input id="name" class="field-input" type="text" value="Usuario SmartCards" />
+                    </div>
+
+                    <div class="field-card">
+                        <label class="field-label" for="profileEmail">Email</label>
+                        <input id="profileEmail" class="field-input" type="email" value="usuario@email.com" />
+                    </div>
+
+                    <div class="field-card">
+                        <label class="field-label" for="goal">Objetivo diario</label>
+                        <input id="goal" class="field-input" type="text" value="10 tarjetas/día" />
+                    </div>
+
+                    <div class="addcards-actions">
+                        <button class="btn btn-secondary" type="button">CANCELAR</button>
+                        <button class="btn btn-primary" type="button">GUARDAR</button>
+                    </div>
+
+                    <div class="field-card">
+                        <label class="field-label">Acciones</label>
+                        <div class="addcards-actions">
+                            <button class="btn btn-outline" type="button">CAMBIAR CONTRASEÑA</button>
+                            <button class="btn btn-secondary" type="button">CERRAR SESIÓN</button>
+                        </div>
+                    </div>
+
+                </section>
+            </div>
+
+        </main>
+
+        <footer class="app-footer">
+            <div class="footer-grid">
+                <div class="footer-col footer-branding">
+                    <div class="footer-logo">
+                        <img src="../assets/smartcards.png" alt="SmartCards logo" class="logo-img">
+                        <p class="footer-tagline">Aprende de manera inteligente con tarjetas de estudio personalizadas.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Producto</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Características</a></li>
+                        <li><a href="#">Premium</a></li>
+                        <li><a href="#">Precios</a></li>
+                        <li><a href="#">Novedades</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Recursos</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Centro de Ayuda</a></li>
+                        <li><a href="#">Guías de Estudio</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Comunidad</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacidad</a></li>
+                        <li><a href="#">Términos</a></li>
+                        <li><a href="#">Acerca de</a></li>
+                        <li><a href="#">Idioma</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p class="copyright">© 2025 SmartCards. Todos los derechos reservados.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Estado del Sistema</a>
+                    <a href="#">Contacto</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+</body>
+
+</html>

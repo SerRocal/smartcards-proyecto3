@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <title>SmartCards - Juego1</title>
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+</head>
+
+<script src="../js/app.js"></script>
+
+<body>
+
+    <!--
+    MAIN APPLICATION LAYOUT Wrapper principal de la aplicación.
+    Contiene header, sidebar, contenido principal y footer.
+    -->
+
+    <div class="app-layout">
+
+        <input class="nav-toggle" type="checkbox" id="nav-toggle">
+        <label class="nav-overlay" for="nav-toggle"></label>
+
+        <!--
+        TOP HEADER: Barra superior fija con navegación 
+        principal, buscador global y acciones de usuario.
+        -->
+
+        <header class="main-header">
+            <label class="nav-burger" for="nav-toggle" aria-label="Abrir menú">
+                <i class="fas fa-bars"></i>
+            </label>
+
+            <div class="search-container">
+                <i class="icon search-icon fas fa-search"></i>
+                <input type="search" placeholder="Buscar mazos, carpetas..." class="search-input">
+            </div>
+
+            <div class="user-actions">
+                <button class="btn btn-premium">
+                    <i class="icon fas fa-star"></i>
+                    <h4>Premium</h4>
+                </button>
+                <a href="Perfil.html" class="btn btn-profile">
+                    <i class="icon fas fa-user"></i>
+                    <h4>Perfil</h4>
+                </a>
+            </div>
+        </header>
+
+        <!--
+        SIDEBAR NAVIGATION: Navegación lateral con acceso a Home, 
+        carpetas, mazos disponibles y accesos a modos de juego.
+        -->
+
+        <aside class="sidebar-nav">
+            <div class="sidebar-top">
+                <div class="sidebar-logo">
+                    <img src="../assets/smartcards.png" alt="SmartCards logo" class="logo-img">
+                    <p class="logo-tagline">Aprende y repasa con tarjetas Smart</p>
+                </div>
+                <!--
+                DECK CATEGORIES: Estructura de carpetas que agrupa 
+                los mazos según temática o área de conocimiento.
+                -->
+
+                <nav class="main-navigation">
+                    <a href="Home.html" class="nav-link">
+                        <i class="icon fas fa-home"></i>
+                        Home
+                    </a>
+                    <div class="nav-link is-disabled">
+                        <i class="icon fas fa-layer-group"></i>
+                        Tus Mazos
+                    </div>
+                    <div class="nav-separator"></div>
+
+                    <p class="section-title">CARPETAS</p>
+
+                    <details class="nav-folder" open>
+                        <summary class="nav-folder-summary">
+                            <i class="icon fas fa-folder"></i>
+                            Idiomas
+                        </summary>
+                        <a href="Deck.html?deck=ingles" class="nav-link nav-deck" data-deck-id="ingles">
+                            <i class="icon fas fa-book"></i>
+                            Idioma: Inglés I
+                        </a>
+                    </details>
+
+                    <details class="nav-folder">
+                        <summary class="nav-folder-summary">
+                            <i class="icon fas fa-folder"></i>
+                            Ciencias
+                        </summary>
+
+                        <div class="nav-link is-disabled">
+                            <i class="icon fas fa-book"></i>
+                            Matemáticas
+                        </div>
+                        <div class="nav-link is-disabled">
+                            <i class="icon fas fa-book"></i>
+                            Biología
+                        </div>
+                    </details>
+
+                    <details class="nav-folder">
+                        <summary class="nav-folder-summary">
+                            <i class="icon fas fa-folder"></i>
+                            Computación
+                        </summary>
+
+                        <div class="nav-link is-disabled">
+                            <i class="icon fas fa-code"></i>
+                            Programación JS
+                        </div>
+                        <div class="nav-link is-disabled">
+                            <i class="icon fas fa-code"></i>
+                            Programación Python
+                        </div>
+                    </details>
+
+                    <details class="nav-folder" open>
+                        <summary class="nav-folder-summary">
+                            <i class="icon fas fa-folder"></i>
+                            Historia y Geo
+                        </summary>
+
+                        <a href="Deck.html?deck=historia" class="nav-link nav-deck" data-deck-id="historia">
+                            <i class="icon fas fa-book"></i>
+                            Historia Mundial
+                        </a>
+                        <div class="nav-link is-disabled">
+                            <i class="icon fas fa-globe"></i>
+                            Geografía
+                        </div>
+                    </details>
+
+                    <div class="nav-separator nav-separator-large"></div>
+
+                    <!--
+                    INSTRUCCIONES DE LOS JUEGOS:
+                    Contenido actualmente deshabilitado.
+                    -->
+
+                    <div class="game-modes-section">
+                        <p class="section-title">INSTRUCCIONES DE JUEGO:</p>
+                        <div class="nav-link is-disabled">
+                            <i class="icon fas fa-grip-vertical"></i>
+                            Juego 1 (Flashcards)
+                        </div>
+                        <div class="nav-link is-disabled">
+                            <i class="icon fas fa-feather"></i>
+                            Juego 2 (Test)
+                        </div>
+                        <div class="nav-link is-disabled">
+                            <i class="icon fas fa-list-ol"></i>
+                            Juego 3 (Definiciones)
+                        </div>
+                    </div>
+                </nav>
+            </div>
+
+            <!--
+            ESTADOS EN LA SIDEBAR: Estadísticas 
+            del usuario en la sidebar
+            -->
+
+            <div class="sidebar-stats">
+                <div class="stat-item-global stat--green">
+                    <div class="stat-icon-global">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-text-global">
+                        <span class="stat-label-global">Tiempo total</span>
+                        <b class="stat-value-global">12h 30m</b>
+                    </div>
+                </div>
+                <div class="stat-item-global stat--pink">
+                    <div class="stat-icon-global">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <div class="stat-text-global">
+                        <span class="stat-label-global">Tarjetas estudiadas</span>
+                        <b class="stat-value-global">248</b>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!--
+        MAIN CONTENT AREA. Contenido principal de la vista Juego_1.
+        Cambia según la página (Home, Deck, Juegos, etc.).
+        -->
+
+        <main class="app-main-container">
+
+            <!--
+            DASHBOARD SUMMARY: Cabecera del Juego_1 con resumen general, 
+            título de la sección y estadísticas del mazo.
+            -->
+
+            <section class="study-header-section">
+                <div class="study-info">
+                    <h1 class="main-title">Idioma: Inglés I
+                    </h1>
+                    <p class="subtitle"><b>Descripción:</b> Vocabulario básico + frases comunes<br><b>Detalles:</b> A1 /
+                        25 tarjetas</p>
+                </div>
+                <div class="study-stats-container">
+                    <div class="stat-item-global stat--green">
+                        <div class="stat-icon-global">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-text-global">
+                            <span class="stat-label-global">Tiempo total</span>
+                            <b class="stat-value-global">12h 30m</b>
+                        </div>
+                    </div>
+                    <div class="stat-item-global stat--pink">
+                        <div class="stat-icon-global">
+                            <i class="fas fa-folder-open"></i>
+                        </div>
+                        <div class="stat-text-global">
+                            <span class="stat-label-global">Tarjetas estudiadas</span>
+                            <b class="stat-value-global">248</b>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="main-content-padded">
+
+                <section class="deck-section game game--flashcards">
+
+                    <!-- 
+                    Top row: volver + titulo + progreso 
+                    -->
+
+                    <div class="game-topbar">
+                        <a class="back-link" href="Deck.html">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Volver al mazo</span>
+                        </a>
+
+                        <div class="game-titlewrap">
+                            <h2 class="game-title">MAZO DE IDIOMAS</h2>
+                            <p class="game-progress">2/15</p>
+                        </div>
+                    </div>
+
+                    <!-- 
+                    Card grande 
+                    -->
+
+                    <div class="review-card game1-card">
+
+                        <div class="review-top">
+                            <button class="icon-btn" type="button" aria-label="Mostrar pista">
+                                <i class="fas fa-question-circle"></i>
+                            </button>
+
+                            <button class="icon-btn" type="button" aria-label="Audio">
+                                <i class="fas fa-volume-up"></i>
+                            </button>
+                        </div>
+
+                        <div class="game1-center">
+                            <button class="nav-arrow" type="button" aria-label="Anterior">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+
+                            <div class="review-center">
+                                <span class="review-pill">Click para revelar</span>
+                                <h3 class="review-title">Idioma: Inglés I</h3>
+                            </div>
+
+                            <button class="nav-arrow" type="button" aria-label="Siguiente">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <!-- 
+                    Botones abajo 
+                    -->
+
+                    <div class="game1-actions">
+                        <button class="btn btn-secondary game1-btn">RESET MAZO</button>
+                        <button class="btn btn-primary game1-btn">GUARDAR</button>
+                    </div>
+
+                </section>
+
+            </div>
+
+        </main>
+
+        <!--
+        APPLICATION FOOTER: Información corporativa, 
+        enlaces legales y recursos adicionales.
+        -->
+
+        <footer class="app-footer">
+
+            <div class="footer-grid">
+
+                <div class="footer-col footer-branding">
+                    <div class="footer-logo">
+                        <img src="../assets/smartcards.png" alt="SmartCards logo" class="logo-img">
+                        <p class="footer-tagline">Aprende de manera inteligente con tarjetas de estudio
+                            personalizadas.</p>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Producto</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Características</a></li>
+                        <li><a href="#">Premium</a></li>
+                        <li><a href="#">Precios</a></li>
+                        <li><a href="#">Novedades</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Recursos</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Centro de Ayuda</a></li>
+                        <li><a href="#">Guías de Estudio</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Comunidad</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-title">Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacidad</a></li>
+                        <li><a href="#">Términos</a></li>
+                        <li><a href="#">Acerca de</a></li>
+                        <li><a href="#">Idioma</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p class="copyright">© 2025 SmartCards. Todos los derechos reservados.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Estado del Sistema</a>
+                    <a href="#">Contacto</a>
+                </div>
+            </div>
+
+        </footer>
+
+    </div>
+</body>
+
+</html>
