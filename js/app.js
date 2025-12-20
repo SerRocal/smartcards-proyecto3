@@ -95,8 +95,11 @@ console.log('App State Loaded:', appState);
     const subtitleEl = document.querySelector('[data-js="deck-subtitle"]');
     const backEl = document.querySelector('[data-js="back-to-deck"]');
 
+    const setTitleInput = document.querySelector('[data-js="set-title"]');
+    const setDescInput = document.querySelector('[data-js="set-desc"]');
+
     // Si no estamos en Add_card.html, salimos (evita tocar otras páginas)
-    if (!titleEl && !subtitleEl && !backEl) return;
+    if (!titleEl && !subtitleEl && !backEl && !setTitleInput && !setDescInput) return;
 
     const deckId = getDeckIdFromURL();
     if (!deckId) return;
@@ -114,6 +117,10 @@ console.log('App State Loaded:', appState);
       <b>Detalles:</b> ${deck.cards.length} tarjetas
     `;
     }
+
+    // Inputs (los editables)
+    if (setTitleInput) setTitleInput.value = deck.title;
+    if (setDescInput) setDescInput.value = deck.description;
 
     // Title del navegador
     document.title = `SmartCards - Add Cards - ${deck.title}`;
@@ -196,11 +203,29 @@ function wireAddCardsEvents() {
             const deck = getDeckById(deckId);
             if (!deck) return;
 
+            // 1) Leer lo que hay ahora mismo escrito en pantalla (antes de añadir)
+            const currentCards = [...listEl.querySelectorAll('.edit-card')]
+                .filter(el => el.getAttribute("data-card-id") !== "__TEMPLATE__")
+                .map(el => ({
+                    front: el.querySelector('[data-js="card-def"]')?.value?.trim() ?? "",
+                    back: el.querySelector('[data-js="card-res"]')?.value?.trim() ?? ""
+                }));
+
+            // 2) Si existe alguna tarjeta vacía, no dejamos crear otra
+            const hasEmpty = currentCards.some(c => !c.front || !c.back);
+            if (hasEmpty) {
+                alert("Tienes una tarjeta vacía. Rellena 'Palabra' y 'Significado' antes de añadir otra.");
+                return;
+            }
+
+            // 3) Si todo está OK, añadimos una nueva vacía
             const newCard = { id: generateId(deckId), front: "", back: "" };
             deck.cards.push(newCard);
+
             saveState(appState);
             renderAddCardsPage();
         });
+
     }
 
     // BORRAR tarjeta (delegación)
@@ -243,11 +268,17 @@ function wireAddCardsEvents() {
             const setTitle = document.querySelector('[data-js="set-title"]')?.value?.trim();
             const setDesc = document.querySelector('[data-js="set-desc"]')?.value?.trim();
 
+            // Validación: no permitir guardar si hay tarjetas vacías
+            const empty = nextCards.find(c => !c.front || !c.back);
+            if (empty) {
+                alert("Tienes una tarjeta vacía. Rellena 'Palabra' y 'Significado' antes de guardar.");
+                return;
+            }
+
             updateDeckInState(deckId, {
-                cards: nextCards,
-                // solo si quieres usarlos en el deck:
-                // title: setTitle ? setTitle : deck.title,
-                // description: setDesc ? setDesc : deck.description,
+                title: setTitle ? setTitle : deck.title,
+                description: setDesc ? setDesc : deck.description,
+                cards: nextCards
             });
 
             saveState(appState);
