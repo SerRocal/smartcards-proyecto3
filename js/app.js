@@ -2,6 +2,12 @@
    SMARTCARDS - APP CORE
    ========================= */
 
+/* =====================================================
+   ESTADO GLOBAL DE LA APLICACIÓN:
+   - Define la estructura de datos (decks y tarjetas)
+   - Gestiona carga y guardado en localStorage
+   ===================================================== */
+
 const STORAGE_KEY = 'smartcards-state';
 
 function getInitialState() {
@@ -49,10 +55,12 @@ function saveState(state) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
+// Obtención del deck activo desde la URL -Helpers de navegación-
 function getDeckIdFromURL() {
     return new URLSearchParams(location.search).get("deck");
 }
 
+// Acceso al deck desde el estado global -Helpers de navegación-
 function getDeckById(deckId) {
     return appState.decks[deckId];
 }
@@ -60,8 +68,9 @@ function getDeckById(deckId) {
 // Estado global de la aplicación
 const appState = loadState();
 
-//DEBUG
+/* DEBUG
 console.log('App State Loaded:', appState);
+*/
 
 /* =====================================================
   Activar en la sidebar el deck que coincide con la URL
@@ -79,6 +88,7 @@ console.log('App State Loaded:', appState);
 /* =====================================================
   En Deck.html, ajustar el enlace "Añadir tarjetas" para mantener ?deck=
   ===================================================== */
+
 (function wireDeckLinks() {
     const deckId = getDeckIdFromURL();
     if (!deckId) return;
@@ -90,6 +100,7 @@ console.log('App State Loaded:', appState);
 /* =====================================================
   En Add_card.html, pintar datos del deck activo
   ===================================================== */
+
 (function wireAddCardsPage() {
     const titleEl = document.querySelector('[data-js="deck-title"]');
     const subtitleEl = document.querySelector('[data-js="deck-subtitle"]');
@@ -134,15 +145,19 @@ console.log('App State Loaded:', appState);
    Se activa solo si existe [data-js="cards-list"]
    ===================================================== */
 
+/* Utilidades Internas */
+// Crea IDs únicos para tarjetas
 function generateId(prefix = "c") {
     return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
+// Actualiza el deck en el estado global
 function updateDeckInState(deckId, patch) {
     if (!appState.decks[deckId]) return;
     appState.decks[deckId] = { ...appState.decks[deckId], ...patch };
 }
 
+/* Renderiza la página Add_card.html con las tarjetas del deck activo */
 function renderAddCardsPage() {
     const listEl = document.querySelector('[data-js="cards-list"]');
     if (!listEl) return; // no estamos en Add_card.html
@@ -163,7 +178,7 @@ function renderAddCardsPage() {
     const template = listEl.querySelector('.edit-card[data-card-id="__TEMPLATE__"]');
     if (!template) return;
 
-    // Limpieza: dejamos el template oculto (y no se renderiza como tarjeta real)
+    // Limpieza: dejamos el template oculto (no se renderiza como tarjeta real)
     template.style.display = "none";
 
     // Borra tarjetas renderizadas anteriores (excepto el template)
@@ -189,7 +204,38 @@ function renderAddCardsPage() {
     });
 }
 
-// Delegación de eventos (un solo listener)
+// Sincroniza y validaciones. Extrae las tarjetas del DOM en formato {id, front, back}
+function getCardsFromDOM(listEl) {
+    const cardEls = [...listEl.querySelectorAll('.edit-card')]
+        .filter((el) => el.getAttribute("data-card-id") !== "__TEMPLATE__");
+
+    return cardEls.map((el) => {
+        const id = el.getAttribute("data-card-id");
+        const front = el.querySelector('[data-js="card-def"]')?.value?.trim() ?? "";
+        const back = el.querySelector('[data-js="card-res"]')?.value?.trim() ?? "";
+        return { id, front, back };
+    });
+}
+
+function syncCardsFromDOMToState(deckId, listEl) {
+    const deck = getDeckById(deckId);
+    if (!deck) return [];
+
+    const nextCards = getCardsFromDOM(listEl);
+    deck.cards = nextCards;         // <-- esto evita que se “pierda” lo ya escrito 
+    saveState(appState);            // guardado rápido para mantener consistencia
+    return nextCards;
+}
+
+function hasEmptyCard(cards) {
+    return cards.some((c) => !c.front || !c.back);
+}
+
+/* =====================================================
+   Delegación de eventos (un solo listener) para añadir, 
+   borrar y guardar tarjetas
+   ===================================================== */
+
 function wireAddCardsEvents() {
     const listEl = document.querySelector('[data-js="cards-list"]');
     if (!listEl) return;
@@ -200,38 +246,32 @@ function wireAddCardsEvents() {
     const addBtn = document.querySelector('[data-js="add-card"]');
     if (addBtn) {
         addBtn.addEventListener("click", () => {
-            const deck = getDeckById(deckId);
-            if (!deck) return;
+            // 1) Guardamos lo escrito ANTES de renderizar
+            const currentCards = syncCardsFromDOMToState(deckId, listEl);
 
-            // 1) Leer lo que hay ahora mismo escrito en pantalla (antes de añadir)
-            const currentCards = [...listEl.querySelectorAll('.edit-card')]
-                .filter(el => el.getAttribute("data-card-id") !== "__TEMPLATE__")
-                .map(el => ({
-                    front: el.querySelector('[data-js="card-def"]')?.value?.trim() ?? "",
-                    back: el.querySelector('[data-js="card-res"]')?.value?.trim() ?? ""
-                }));
-
-            // 2) Si existe alguna tarjeta vacía, no dejamos crear otra
-            const hasEmpty = currentCards.some(c => !c.front || !c.back);
-            if (hasEmpty) {
-                alert("Tienes una tarjeta vacía. Rellena 'Palabra' y 'Significado' antes de añadir otra.");
+            // 2) No permitir crear otra si hay alguna incompleta
+            if (hasEmptyCard(currentCards)) {
+                alert("Tienes una tarjeta incompleta. Rellénala (Palabra y Significado) antes de añadir otra.");
                 return;
             }
 
-            // 3) Si todo está OK, añadimos una nueva vacía
-            const newCard = { id: generateId(deckId), front: "", back: "" };
-            deck.cards.push(newCard);
+            // 3) Añadimos la nueva y re-render
+            const deck = getDeckById(deckId);
+            if (!deck) return;
 
+            deck.cards.push({ id: generateId(deckId), front: "", back: "" });
             saveState(appState);
             renderAddCardsPage();
         });
-
     }
 
     // BORRAR tarjeta (delegación)
     listEl.addEventListener("click", (e) => {
         const btn = e.target.closest('[data-action="delete-card"]');
         if (!btn) return;
+
+        // Guardamos lo escrito antes de borrar (para no perder cambios)
+        syncCardsFromDOMToState(deckId, listEl);
 
         const cardEl = btn.closest(".edit-card");
         if (!cardEl) return;
@@ -247,48 +287,32 @@ function wireAddCardsEvents() {
         renderAddCardsPage();
     });
 
-    // LISTO: recoger valores del DOM → state → guardar → volver
+    // LISTO: guardar (con validación) volver
     const saveBtn = document.querySelector('[data-js="save-deck"]');
     if (saveBtn) {
         saveBtn.addEventListener("click", () => {
-            const deck = getDeckById(deckId);
-            if (!deck) return;
+            const currentCards = syncCardsFromDOMToState(deckId, listEl);
 
-            const cardEls = [...listEl.querySelectorAll('.edit-card')]
-                .filter((el) => el.getAttribute("data-card-id") !== "__TEMPLATE__");
-
-            const nextCards = cardEls.map((el) => {
-                const id = el.getAttribute("data-card-id");
-                const front = el.querySelector('[data-js="card-def"]')?.value?.trim() ?? "";
-                const back = el.querySelector('[data-js="card-res"]')?.value?.trim() ?? "";
-                return { id, front, back };
-            });
-
-            // (Opcional) guardar título/desc del set
-            const setTitle = document.querySelector('[data-js="set-title"]')?.value?.trim();
-            const setDesc = document.querySelector('[data-js="set-desc"]')?.value?.trim();
-
-            // Validación: no permitir guardar si hay tarjetas vacías
-            const empty = nextCards.find(c => !c.front || !c.back);
-            if (empty) {
-                alert("Tienes una tarjeta vacía. Rellena 'Palabra' y 'Significado' antes de guardar.");
+            if (hasEmptyCard(currentCards)) {
+                alert("No puedes guardar: hay tarjetas incompletas. Rellena (Palabra y Significado) o bórralas.");
                 return;
             }
 
-            updateDeckInState(deckId, {
-                title: setTitle ? setTitle : deck.title,
-                description: setDesc ? setDesc : deck.description,
-                cards: nextCards
-            });
-
-            saveState(appState);
             location.href = `Deck.html?deck=${deckId}`;
         });
     }
 }
 
-// Inicialización específica de Add_Cards
+/* =====================================================
+   INIT Add_Cards (solo en Add_card.html)
+   ===================================================== */
 (function initAddCards() {
+    const listEl = document.querySelector('[data-js="cards-list"]');
+    if (!listEl) return; // si no estamos en Add_card.html, no hace nada
+
+    // 1) Primero pintamos las tarjetas del state (para que el DOM tenga cards)
     renderAddCardsPage();
+
+    // 2) Conectamos eventos
     wireAddCardsEvents();
 })();
