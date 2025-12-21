@@ -60,13 +60,13 @@ function getDeckIdFromURL() {
     return new URLSearchParams(location.search).get("deck");
 }
 
+// Estado global de la aplicación
+const appState = loadState();
+
 // Acceso al deck desde el estado global -Helpers de navegación-
 function getDeckById(deckId) {
     return appState.decks[deckId];
 }
-
-// Estado global de la aplicación
-const appState = loadState();
 
 /* DEBUG
 console.log('App State Loaded:', appState);
@@ -101,6 +101,7 @@ console.log('App State Loaded:', appState);
   En Add_card.html, pintar datos del deck activo
   ===================================================== */
 
+//Rellenar título, subtítulo, inputs y enlace "volver al mazo"
 (function wireAddCardsPage() {
     const titleEl = document.querySelector('[data-js="deck-title"]');
     const subtitleEl = document.querySelector('[data-js="deck-subtitle"]');
@@ -306,6 +307,8 @@ function wireAddCardsEvents() {
 /* =====================================================
    INIT Add_Cards (solo en Add_card.html)
    ===================================================== */
+
+// Pintar tarjetas + conectar eventos
 (function initAddCards() {
     const listEl = document.querySelector('[data-js="cards-list"]');
     if (!listEl) return; // si no estamos en Add_card.html, no hace nada
