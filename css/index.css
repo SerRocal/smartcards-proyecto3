@@ -1356,6 +1356,24 @@ a.btn {
     color: inherit;
 }
 
+/* ----------------------------------
+   Botones no implementados (disabled)
+   ---------------------------------- */
+
+.icon-btn[disabled],
+.icon-btn.is-disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Evita hover engañoso */
+.icon-btn[disabled]:hover,
+.icon-btn.is-disabled:hover {
+    background: none;
+}
+
+
 /* DECK: juegos responsive */
 @media (max-width: 900px) {
     .games-grid {

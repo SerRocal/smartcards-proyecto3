@@ -114,6 +114,7 @@ function ensureCardFlags(deck) {
     deck.cards = deck.cards.map((c) => ({ favorite: false, ...c }));
 }
 
+// Renderiza la tabla de tarjetas en Deck.html
 function renderDeckTable(deckId, mode = "all") {
     const tableBody = document.querySelector('[data-js="table-body"]');
     const tabItems = document.querySelector('[data-js="tab-items"]');
@@ -181,6 +182,7 @@ function renderDeckTable(deckId, mode = "all") {
     });
 }
 
+// Conexión de eventos en Deck.html
 function wireDeckTable() {
     const tableBody = document.querySelector('[data-js="table-body"]');
     const tabItems = document.querySelector('[data-js="tab-items"]');
