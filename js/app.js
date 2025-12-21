@@ -345,15 +345,30 @@ function getCardsFromDOM(listEl) {
     });
 }
 
+// Sincroniza las tarjetas del DOM al estado global (deck.cards)
+// Retorna las tarjetas actuales
+// Mantiene propiedades previas (favorite, etc.) al hacer merge
 function syncCardsFromDOMToState(deckId, listEl) {
     const deck = getDeckById(deckId);
     if (!deck) return [];
 
-    const nextCards = getCardsFromDOM(listEl);
-    deck.cards = nextCards;         // <-- esto evita que se “pierda” lo ya escrito 
-    saveState(appState);            // guardado rápido para mantener consistencia
+    // Mapa de tarjetas previas por id (para conservar favorite, etc.)
+    const prevCardsById = new Map(deck.cards.map(c => [c.id, c]));
+
+    // Tarjetas actuales leídas del DOM (solo id/front/back)
+    const domCards = getCardsFromDOM(listEl);
+
+    // Merge: mantenemos propiedades previas y actualizamos front/back
+    const nextCards = domCards.map((c) => {
+        const prev = prevCardsById.get(c.id) || {};
+        return { ...prev, ...c };
+    });
+
+    deck.cards = nextCards;
+    saveState(appState);
     return nextCards;
 }
+
 
 function hasEmptyCard(cards) {
     return cards.some((c) => !c.front || !c.back);
