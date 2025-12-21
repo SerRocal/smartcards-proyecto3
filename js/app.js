@@ -141,6 +141,12 @@ function renderDeckTable(deckId, mode = "all") {
         ? deck.cards.filter((c) => c.favorite)
         : deck.cards;
 
+    // Si el deck está vacío o no existe, salimos   
+    if (cardsToShow.length === 0) {
+        tableBody.innerHTML = "<p class='muted' style='padding:20px'>Este mazo aún no tiene tarjetas.</p>";
+        return;
+    }
+
     // Pintar filas
     tableBody.innerHTML = "";
 
