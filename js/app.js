@@ -98,7 +98,134 @@ console.log('App State Loaded:', appState);
 })();
 
 /* =====================================================
-  En Add_card.html, pintar datos del deck activo
+  DECK.html: renderizar tabla de tarjetas + pestañas (Items/Favoritas)
+  - Pinta filas desde appState (no HTML “de mentira”)
+  - Actualiza contador: ITEMS DEL MAZO (N)
+  - “Favoritas” (corazón) funcional
+  - Deshabilita botones no implementados (audio/abrir/editar)
+  ===================================================== */
+
+function getDeckIdOrDefault() {
+    return getDeckIdFromURL() || "ingles";
+}
+
+function ensureCardFlags(deck) {
+    // Asegura compatibilidad si las cards viejas no tienen "favorite"
+    deck.cards = deck.cards.map((c) => ({ favorite: false, ...c }));
+}
+
+function renderDeckTable(deckId, mode = "all") {
+    const tableBody = document.querySelector('[data-js="table-body"]');
+    const tabItems = document.querySelector('[data-js="tab-items"]');
+    const tabFavs = document.querySelector('[data-js="tab-favs"]');
+
+    // Si no estamos en Deck.html, salimos
+    if (!tableBody || !tabItems || !tabFavs) return;
+
+    const deck = getDeckById(deckId);
+    if (!deck) return;
+
+    ensureCardFlags(deck);
+
+    // Tabs label + estado visual
+    tabItems.textContent = `ITEMS DEL MAZO (${deck.cards.length})`;
+
+    const favCount = deck.cards.filter((c) => c.favorite).length;
+    tabFavs.textContent = `FAVORITAS (${favCount})`;
+
+    tabItems.classList.toggle("is-active", mode === "all");
+    tabFavs.classList.toggle("is-active", mode === "favs");
+
+    // Filtrado
+    const cardsToShow = mode === "favs"
+        ? deck.cards.filter((c) => c.favorite)
+        : deck.cards;
+
+    // Pintar filas
+    tableBody.innerHTML = "";
+
+    cardsToShow.forEach((card) => {
+        const row = document.createElement("div");
+        row.className = "table-row";
+        row.setAttribute("data-card-id", card.id);
+
+        row.innerHTML = `
+      <span class="table-cell def">${card.front || "<span class='muted'>—</span>"}</span>
+      <span class="table-cell res muted">${card.back || "<span class='muted'>—</span>"}</span>
+      <div class="table-actions">
+        <button class="icon-btn" type="button" aria-label="Favorito" data-action="toggle-fav" title="Marcar como favorita">
+          <i class="${card.favorite ? "fas" : "far"} fa-heart"></i>
+        </button>
+
+        <button class="icon-btn" type="button" aria-label="Audio" data-action="disabled" disabled aria-disabled="true" title="No disponible">
+          <i class="fas fa-volume-up"></i>
+        </button>
+
+        <button class="icon-btn" type="button" aria-label="Abrir" data-action="disabled" disabled aria-disabled="true" title="No disponible">
+          <i class="fas fa-external-link-alt"></i>
+        </button>
+
+        <button class="icon-btn" type="button" aria-label="Editar" data-action="disabled" disabled aria-disabled="true" title="No disponible">
+          <i class="far fa-edit"></i>
+        </button>
+      </div>
+    `;
+
+        tableBody.appendChild(row);
+    });
+}
+
+function wireDeckTable() {
+    const tableBody = document.querySelector('[data-js="table-body"]');
+    const tabItems = document.querySelector('[data-js="tab-items"]');
+    const tabFavs = document.querySelector('[data-js="tab-favs"]');
+
+    // Si no estamos en Deck.html, salimos
+    if (!tableBody || !tabItems || !tabFavs) return;
+
+    const deckId = getDeckIdOrDefault();
+
+    // Render inicial (esto también arregla “entro directo por Live Server sin ?deck” => usa ingles)
+    renderDeckTable(deckId, "all");
+
+    // Tabs
+    tabItems.addEventListener("click", () => renderDeckTable(deckId, "all"));
+    tabFavs.addEventListener("click", () => renderDeckTable(deckId, "favs"));
+
+    // Delegación: favoritos
+    tableBody.addEventListener("click", (e) => {
+        const btn = e.target.closest('[data-action="toggle-fav"]');
+        if (!btn) return;
+
+        const row = btn.closest(".table-row");
+        const cardId = row?.getAttribute("data-card-id");
+        if (!cardId) return;
+
+        const deck = getDeckById(deckId);
+        if (!deck) return;
+
+        ensureCardFlags(deck);
+
+        const card = deck.cards.find((c) => c.id === cardId);
+        if (!card) return;
+
+        card.favorite = !card.favorite;
+        saveState(appState);
+
+        // Re-render en el modo actual (según pestaña activa)
+        const mode = tabFavs.classList.contains("is-active") ? "favs" : "all";
+        renderDeckTable(deckId, mode);
+    });
+}
+
+// INIT específico de Deck.html
+(function initDeckTable() {
+    wireDeckTable();
+})();
+
+
+/* =====================================================
+  ADD_CARD:En Add_card.html, pintar datos del deck activo
   ===================================================== */
 
 //Rellenar título, subtítulo, inputs y enlace "volver al mazo"
@@ -142,7 +269,7 @@ console.log('App State Loaded:', appState);
 })();
 
 /* =====================================================
-   ADD_CARDS: render + add + delete + save (localStorage)
+   ADD_CARD: render + add + delete + save (localStorage)
    Se activa solo si existe [data-js="cards-list"]
    ===================================================== */
 
@@ -233,7 +360,7 @@ function hasEmptyCard(cards) {
 }
 
 /* =====================================================
-   Delegación de eventos (un solo listener) para añadir, 
+   ADD_CARD: Delegación de eventos (un solo listener) para añadir, 
    borrar y guardar tarjetas
    ===================================================== */
 
@@ -305,7 +432,7 @@ function wireAddCardsEvents() {
 }
 
 /* =====================================================
-   INIT Add_Cards (solo en Add_card.html)
+   ADD_CARD: INIT Add_Cards (solo en Add_card.html)
    ===================================================== */
 
 // Pintar tarjetas + conectar eventos

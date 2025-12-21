@@ -342,8 +342,8 @@
                 <section class="table-card">
                     <div class="table-head">
                         <div class="table-tabs">
-                            <button class="tab is-active" type="button">ITEMS DEL MAZO (4)</button>
-                            <button class="tab" type="button">MEMORIZADAS (4)</button>
+                            <button class="tab is-active" data-js="tab-items" type="button">ITEMS DEL MAZO (4)</button>
+                            <button class="tab" data-js="tab-favs" type="button">FAVORITOS (4)</button>
                         </div>
 
                         <div class="table-search">
@@ -357,6 +357,9 @@
                         <span>RESULTADO</span>
                         <span class="table-actions-col"></span>
                     </div>
+
+                    <!-- 
+                    Eliminamos la tabla estática para crearla con table-body con JS 
 
                     <div class="table-row">
                         <span class="table-cell def">DEFINICIÓN</span>
@@ -372,6 +375,10 @@
                                     class="far fa-edit"></i></button>
                         </div>
                     </div>
+
+                    -->
+
+                    <div data-js="table-body"></div>
 
                     <div class="table-row">
                         <span class="table-cell">DEFINICIÓN</span>
