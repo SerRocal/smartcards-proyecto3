@@ -110,8 +110,13 @@ function getDeckIdOrDefault() {
 }
 
 function ensureCardFlags(deck) {
-    // Asegura compatibilidad si las cards viejas no tienen "favorite"
-    deck.cards = deck.cards.map((c) => ({ favorite: false, ...c }));
+    if (!deck || !deck.cards) return;
+    // Unificamos: todas las tarjetas deben tener favorite y learnt
+    deck.cards = deck.cards.map((c) => ({
+        favorite: false,
+        learnt: false,
+        ...c
+    }));
 }
 
 // Renderiza la tabla de tarjetas en Deck.html
@@ -557,51 +562,82 @@ function renderGame1UI({ deck, cards, index, showBack }) {
 }
 
 function wireGame1() {
-    // Si no estamos en Juego1.html, salimos
     const flashcardEl = document.querySelector('[data-js="flashcard"]');
     if (!flashcardEl) return;
-
-    const prevBtn = document.querySelector('[data-js="prev-card"]');
-    const nextBtn = document.querySelector('[data-js="next-card"]');
 
     const deckId = getDeckIdFromURL() || "ingles";
     const deck = getDeckById(deckId);
     if (!deck) return;
 
-    const cards = getCompleteCards(deck);
+    //Limpieza y unificación de flags
+    ensureCardFlags(deck);
 
-    // Estado de sesión (NO persistente)
+    // Filtrado: Solo tarjetas completas Y que NO estén marcadas como aprendidas
+    let cards = getCompleteCards(deck).filter(c => !c.learnt);
     let index = 0;
     let showBack = false;
 
-    // Render inicial
     renderGame1UI({ deck, cards, index, showBack });
 
-    // Flip al click sobre la tarjeta
+    // Flip tarjeta
     flashcardEl.addEventListener("click", () => {
         if (cards.length === 0) return;
         showBack = !showBack;
         renderGame1UI({ deck, cards, index, showBack });
     });
 
-    // Prev/Next
-    if (prevBtn) {
-        prevBtn.addEventListener("click", () => {
-            if (cards.length === 0) return;
-            index = (index - 1 + cards.length) % cards.length;
-            showBack = false; // al cambiar de tarjeta, vuelve a front
-            renderGame1UI({ deck, cards, index, showBack });
-        });
-    }
+    // NAVEGACIÓN:
 
-    if (nextBtn) {
-        nextBtn.addEventListener("click", () => {
-            if (cards.length === 0) return;
-            index = (index + 1) % cards.length;
-            showBack = false;
-            renderGame1UI({ deck, cards, index, showBack });
-        });
-    }
+    // BOTÓN: Anterior
+    document.querySelector('[data-js="prev-card"]')?.addEventListener("click", () => {
+        if (cards.length <= 1) return;
+        index = (index - 1 + cards.length) % cards.length; // Salto circular hacia atrás
+        showBack = false;
+        renderGame1UI({ deck, cards, index, showBack });
+    });
+
+    // BOTÓN: Siguiente
+    document.querySelector('[data-js="next-card"]')?.addEventListener("click", () => {
+        if (cards.length <= 1) return;
+        index = (index + 1) % cards.length; // Salto circular hacia adelante
+        showBack = false;
+        renderGame1UI({ deck, cards, index, showBack });
+    });
+
+    // BOTÓN RESET
+    document.querySelector('.btn-secondary.game1-btn')?.addEventListener("click", () => {
+        if (!confirm("¿Reiniciar el mazo y volver a ver todas las tarjetas?")) return;
+
+        deck.cards.forEach(c => c.learnt = false);
+        saveState(appState);
+
+        cards = getCompleteCards(deck).filter(c => !c.learnt);
+        index = 0;
+        showBack = false;
+        renderGame1UI({ deck, cards, index, showBack });
+    });
+
+    // BOTÓN GUARDAR 
+    const saveBtn = document.querySelector('.btn-primary.game1-btn');
+    saveBtn?.addEventListener("click", () => {
+        if (cards.length === 0) return;
+
+        // Marcamos la tarjeta actual como aprendida en el estado global
+        const currentCardId = cards[index].id;
+        const cardInState = deck.cards.find(c => c.id === currentCardId);
+        if (cardInState) cardInState.learnt = true;
+
+        saveState(appState);
+
+        // Actualizamos la lista local del juego (sacamos la tarjeta)
+        cards = cards.filter(c => c.id !== currentCardId);
+
+        // Ajustamos el índice si nos hemos quedado fuera de rango
+        if (index >= cards.length) index = 0;
+        showBack = false;
+
+        renderGame1UI({ deck, cards, index, showBack });
+    });
 }
 
 // INIT Juego 1
