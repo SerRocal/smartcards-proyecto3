@@ -589,10 +589,21 @@ function renderGame1UI({ deck, cards, index, showBack }) {
 
     // Header + volver al mazo
     if (titleEl) titleEl.textContent = deck?.title || "Mazo";
+    // Subtítulo: mostramos TOTAL de tarjetas completas del mazo (sin contar learnt)
+    // y además cuántas quedan "pendientes" en este juego (las que hay en cards)
     if (subtitleEl) {
         const desc = deck?.description || "Sin descripción";
-        subtitleEl.innerHTML = `<b>Descripción:</b> ${desc}<br><b>Detalles:</b> ${cards.length} tarjetas`;
+
+        // Total del mazo (tarjetas completas, aunque estén learnt)
+        const totalComplete = getCompleteCards(deck).length;
+
+        // Pendientes en el juego (tarjetas no learnt que quedan en el array cards)
+        const pending = cards.length;
+
+        subtitleEl.innerHTML =
+            `<b>Descripción:</b> ${desc}<br><b>Detalles:</b> ${totalComplete} tarjetas · ${pending} pendientes`;
     }
+    // Back link al deck actual
     if (backLink) backLink.setAttribute("href", `Deck.html?deck=${deck.id}`);
 
     // Sin tarjetas
