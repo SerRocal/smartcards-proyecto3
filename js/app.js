@@ -3,6 +3,23 @@
    ========================= */
 
 /* =====================================================
+   AUTH (fake login) - guard simple por localStorage
+   ===================================================== */
+
+const AUTH_KEY = "smartcards-auth";
+
+(function authGuard() {
+    const path = (location.pathname || "").toLowerCase();
+    const isLoginPage = path.includes("login.html");
+
+    const isAuthed = localStorage.getItem(AUTH_KEY) === "1";
+
+    if (!isAuthed && !isLoginPage) {
+        location.href = "Login.html";
+    }
+})();
+
+/* =====================================================
    ESTADO GLOBAL DE LA APLICACIÓN:
    - Define la estructura de datos (decks y tarjetas)
    - Gestiona carga y guardado en localStorage
@@ -71,6 +88,31 @@ function getDeckById(deckId) {
 /* DEBUG
 console.log('App State Loaded:', appState);
 */
+
+/* =====================================================
+   LOGIN.html: handler de login (fake)
+   ===================================================== */
+
+(function wireLogin() {
+    const form = document.querySelector('[data-js="login-form"]');
+    if (!form) return;
+
+    const DEMO_EMAIL = "demo@smartcards.com";
+    const DEMO_PASS = "1234";
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const email = document.querySelector("#email")?.value.trim().toLowerCase();
+        const pass = document.querySelector("#password")?.value.trim();
+
+        if (email === DEMO_EMAIL && pass === DEMO_PASS) {
+            localStorage.setItem(AUTH_KEY, "1");
+            location.href = "Home.html";
+        }
+    });
+})();
+
 
 /* =====================================================
   Activar en la sidebar el deck que coincide con la URL

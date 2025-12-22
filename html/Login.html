@@ -17,7 +17,7 @@
                 <p class="auth-subtitle">Accede para continuar tu aprendizaje.</p>
             </header>
 
-            <form class="auth-form">
+            <form class="auth-form" data-js="login-form">
                 <div class="field-card">
                     <label class="field-label" for="email">Email</label>
                     <input class="field-input" id="email" type="email" placeholder="tuemail@email.com"
@@ -30,8 +30,11 @@
                         autocomplete="current-password">
                 </div>
 
+                <!-- Mensaje inline (en vez de alert) -->
+                <p class="auth-error" data-js="login-error" style="display:none; margin-top:10px;"></p>
+
                 <div class="auth-actions">
-                    <button class="btn btn-secondary" type="button">
+                    <button class="btn btn-secondary" type="button" data-js="register-disabled">
                         <i class="fas fa-user-plus"></i>
                         <span style="margin-left:12px;">REGISTRO</span>
                     </button>
@@ -43,9 +46,10 @@
                 </div>
 
                 <p class="auth-links">
-                    <a href="#">¿Has olvidado tu contraseña?</a>
+                    <a href="#" data-js="forgot-disabled">¿Has olvidado tu contraseña?</a>
                 </p>
             </form>
+
         </section>
     </main>
 
