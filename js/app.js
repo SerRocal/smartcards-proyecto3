@@ -548,10 +548,10 @@ function renderGame1UI({ deck, cards, index, showBack }) {
     // Texto de tarjeta
     const current = cards[index];
     if (showBack) {
-        hintEl.textContent = "Click para ver definición";
+        hintEl.textContent = "Click para ver el original";
         cardTextEl.textContent = current.back;
     } else {
-        hintEl.textContent = "Click para revelar";
+        hintEl.textContent = "Click para ver la definición";
         cardTextEl.textContent = current.front;
     }
 }
