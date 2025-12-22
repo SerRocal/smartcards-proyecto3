@@ -1152,7 +1152,10 @@ a.btn {
     letter-spacing: .6px;
 }
 
-/* Repaso rápido */
+/* ----------------------------------
+   Repaso rápido (Válido para Juego1 también)
+   ---------------------------------- */
+
 .review-card {
     background: linear-gradient(135deg, var(--color-fondo), #fff 50%, rgba(248, 199, 204, .10));
     border: 1px solid rgba(248, 199, 204, .35);
@@ -1177,6 +1180,14 @@ a.btn {
     justify-content: center;
     padding: 28px 18px;
     text-align: center;
+}
+
+[data-js="flashcard"] {
+    cursor: pointer;
+}
+
+[data-js="flashcard"]:hover {
+    cursor: pointer;
 }
 
 .review-pill {

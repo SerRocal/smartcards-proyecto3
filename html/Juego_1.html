@@ -203,9 +203,10 @@
 
             <section class="study-header-section">
                 <div class="study-info">
-                    <h1 class="main-title">Idioma: Inglés I
+                    <h1 class="main-title" data-js="deck-title">Idioma: Inglés I
                     </h1>
-                    <p class="subtitle"><b>Descripción:</b> Vocabulario básico + frases comunes<br><b>Detalles:</b> A1 /
+                    <p class="subtitle" data-js="deck-subtitle"><b>Descripción:</b> Vocabulario básico + frases
+                        comunes<br><b>Detalles:</b> A1 /
                         25 tarjetas</p>
                 </div>
                 <div class="study-stats-container">
@@ -239,14 +240,14 @@
                     -->
 
                     <div class="game-topbar">
-                        <a class="back-link" href="Deck.html">
+                        <a class="back-link" data-js="back-to-deck" href="Deck.html">
                             <i class="fas fa-arrow-left"></i>
                             <span>Volver al mazo</span>
                         </a>
 
                         <div class="game-titlewrap">
-                            <h2 class="game-title">MAZO DE IDIOMAS</h2>
-                            <p class="game-progress">2/15</p>
+                            <h2 class="game-title" data-js="game-title">MAZO DE IDIOMAS</h2>
+                            <p class="game-progress" data-js="game-progress">0/0</p>
                         </div>
                     </div>
 
@@ -267,16 +268,16 @@
                         </div>
 
                         <div class="game1-center">
-                            <button class="nav-arrow" type="button" aria-label="Anterior">
+                            <button class="nav-arrow" data-js="prev-card" type="button" aria-label="Anterior">
                                 <i class="fas fa-arrow-left"></i>
                             </button>
 
-                            <div class="review-center">
-                                <span class="review-pill">Click para revelar</span>
-                                <h3 class="review-title">Idioma: Inglés I</h3>
+                            <div class="review-center" data-js="flashcard">
+                                <span class="review-pill" data-js="reveal-hint">Click para revelar</span>
+                                <h3 class="review-title" data-js="card-text">Idioma: Inglés I</h3>
                             </div>
 
-                            <button class="nav-arrow" type="button" aria-label="Siguiente">
+                            <button class="nav-arrow" data-js="next-card" type="button" aria-label="Siguiente">
                                 <i class="fas fa-arrow-right"></i>
                             </button>
                         </div>

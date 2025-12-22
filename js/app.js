@@ -497,3 +497,115 @@ function wireAddCardsEvents() {
     });
 })();
 
+/* =====================================================
+  JUEGO 1 (Flashcards): flip + siguiente/anterior (sesión)
+  - Lee deck por ?deck= (fallback: ingles)
+  - Muestra front/back con flip al click
+  - Prev/Next + progreso X/N
+  - Si no hay tarjetas -> mensaje
+  ===================================================== */
+
+function getCompleteCards(deck) {
+    if (!deck || !Array.isArray(deck.cards)) return [];
+    return deck.cards.filter(c =>
+        c?.front && c.front.trim() && c?.back && c.back.trim()
+    );
+}
+
+function renderGame1UI({ deck, cards, index, showBack }) {
+    const titleEl = document.querySelector('[data-js="deck-title"]');
+    const subtitleEl = document.querySelector('[data-js="deck-subtitle"]');
+    const backLink = document.querySelector('[data-js="back-to-deck"]');
+
+    const gameTitle = document.querySelector('[data-js="game-title"]');
+    const progressEl = document.querySelector('[data-js="game-progress"]');
+    const hintEl = document.querySelector('[data-js="reveal-hint"]');
+    const cardTextEl = document.querySelector('[data-js="card-text"]');
+
+    if (!gameTitle || !progressEl || !hintEl || !cardTextEl) return;
+
+    // Header + volver al mazo
+    if (titleEl) titleEl.textContent = deck?.title || "Mazo";
+    if (subtitleEl) {
+        const desc = deck?.description || "Sin descripción";
+        subtitleEl.innerHTML = `<b>Descripción:</b> ${desc}<br><b>Detalles:</b> ${cards.length} tarjetas`;
+    }
+    if (backLink) backLink.setAttribute("href", `Deck.html?deck=${deck.id}`);
+
+    // Sin tarjetas
+    if (cards.length === 0) {
+        gameTitle.textContent = deck?.title || "Mazo";
+        progressEl.textContent = `0/0`;
+        hintEl.textContent = `No hay tarjetas completas en este mazo`;
+        cardTextEl.textContent = `Añade tarjetas desde "Añadir tarjetas"`;
+        return;
+    }
+
+    // Título + progreso
+    gameTitle.textContent = deck?.title || "Mazo";
+    progressEl.textContent = `${index + 1}/${cards.length}`;
+
+    // Texto de tarjeta
+    const current = cards[index];
+    if (showBack) {
+        hintEl.textContent = "Click para ver definición";
+        cardTextEl.textContent = current.back;
+    } else {
+        hintEl.textContent = "Click para revelar";
+        cardTextEl.textContent = current.front;
+    }
+}
+
+function wireGame1() {
+    // Si no estamos en Juego1.html, salimos
+    const flashcardEl = document.querySelector('[data-js="flashcard"]');
+    if (!flashcardEl) return;
+
+    const prevBtn = document.querySelector('[data-js="prev-card"]');
+    const nextBtn = document.querySelector('[data-js="next-card"]');
+
+    const deckId = getDeckIdFromURL() || "ingles";
+    const deck = getDeckById(deckId);
+    if (!deck) return;
+
+    const cards = getCompleteCards(deck);
+
+    // Estado de sesión (NO persistente)
+    let index = 0;
+    let showBack = false;
+
+    // Render inicial
+    renderGame1UI({ deck, cards, index, showBack });
+
+    // Flip al click sobre la tarjeta
+    flashcardEl.addEventListener("click", () => {
+        if (cards.length === 0) return;
+        showBack = !showBack;
+        renderGame1UI({ deck, cards, index, showBack });
+    });
+
+    // Prev/Next
+    if (prevBtn) {
+        prevBtn.addEventListener("click", () => {
+            if (cards.length === 0) return;
+            index = (index - 1 + cards.length) % cards.length;
+            showBack = false; // al cambiar de tarjeta, vuelve a front
+            renderGame1UI({ deck, cards, index, showBack });
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener("click", () => {
+            if (cards.length === 0) return;
+            index = (index + 1) % cards.length;
+            showBack = false;
+            renderGame1UI({ deck, cards, index, showBack });
+        });
+    }
+}
+
+// INIT Juego 1
+(function initGame1() {
+    wireGame1();
+})();
+
