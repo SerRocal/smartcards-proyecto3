@@ -721,6 +721,24 @@ a.btn {
     color: var(--color-texto-principal);
 }
 
+[data-js="reset-demo"] {
+    background: var(--color-superficie);
+    border: 1px solid var(--color-danger);
+    color: var(--color-danger);
+    font-family: var(--font-title);
+    padding: 5px 10px;
+    border-radius: 8px;
+    opacity: 0.8;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+[data-js="reset-demo"]:hover {
+    background: var(--color-danger);
+    color: var(--color-superficie);
+    opacity: 1;
+}
+
 @media (max-width: 750px) {
 
     .app-footer {
@@ -1584,6 +1602,36 @@ a.btn {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-md);
+}
+
+/* Botón de guardar */
+[data-js="save-deck"] {
+    position: relative;
+}
+
+/* Mensaje invisible por defecto */
+[data-js="save-deck"]::after {
+    content: "Guardado ✓";
+    position: absolute;
+    top: -30px;
+    /* Aparece arriba del botón */
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-primario-rosa);
+    color: var(--color-texto-principal);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: var(--font-pequeña);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Se hace visible y sube un poco */
+[data-js="save-deck"].is-saved::after {
+    opacity: 1;
+    top: calc(-1 * var(--spacing-xl));
 }
 
 @media (max-width: 900px) {

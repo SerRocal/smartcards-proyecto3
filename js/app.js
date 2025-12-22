@@ -449,7 +449,15 @@ function wireAddCardsEvents() {
                 return;
             }
 
-            location.href = `Deck.html?deck=${deckId}`;
+            // FEEDBACK VISUAL
+            saveBtn.classList.add("is-saved");
+            saveBtn.textContent = "Guardado ✓";
+
+            // SALIDA CON DELAY
+            // Envolvemos el cambio de página en un setTimeout para dar tiempo al CSS
+            setTimeout(() => {
+                location.href = `Deck.html?deck=${deckId}`;
+            }, 1000); // 1000 milisegundos = 1 segundo
         });
     }
 }
@@ -469,3 +477,23 @@ function wireAddCardsEvents() {
     // 2) Conectamos eventos
     wireAddCardsEvents();
 })();
+
+/* =====================================================
+   BOTÓN RESET DEMO (en todas las páginas)
+   - Elimina el estado guardado en localStorage
+   - Recarga la página para restaurar el estado inicial
+   ===================================================== */
+
+(function wireResetDemo() {
+    const btn = document.querySelector('[data-js="reset-demo"]');
+    if (!btn) return;
+
+    btn.addEventListener("click", () => {
+        const ok = confirm("Esto borrará los datos guardados del proyecto (localStorage). ¿Continuar?");
+        if (!ok) return;
+
+        localStorage.removeItem(STORAGE_KEY);
+        location.href = "Home.html";
+    });
+})();
+
