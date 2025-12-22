@@ -149,6 +149,9 @@ console.log('App State Loaded:', appState);
 
     const game1Link = document.querySelector('[data-js="go-game1"]');
     if (game1Link) game1Link.setAttribute("href", `Juego_1.html?deck=${deckId}`);
+
+    const game2Link = document.querySelector('[data-js="go-game2"]');
+    if (game2Link) game2Link.setAttribute("href", `Juego_2.html?deck=${deckId}`);
 })();
 
 

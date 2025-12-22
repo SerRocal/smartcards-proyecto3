@@ -168,7 +168,7 @@
             del usuario en la sidebar
             -->
 
-            <div class="sidebar-stats">
+            <div class="sidebar-stats is-disabled">
                 <div class="stat-item-global stat--green">
                     <div class="stat-icon-global">
                         <i class="fas fa-clock"></i>
@@ -204,12 +204,12 @@
 
             <section class="study-header-section">
                 <div class="study-info">
-                    <h1 class="main-title">Idioma: Inglés I</h1>
-                    <p class="subtitle"><b>Descripción:</b> Vocabulario básico + frases comunes<br><b>Detalles:</b> A1 /
-                        25 tarjetas</p>
+                    <h1 class="main-title" data-js="deck-title">Mazo</h1>
+                    <p class="subtitle" data-js="deck-sub-title"><b>Descripción:</b> Descripción del
+                        mazo<br><b>Detalles:</b> X tarjetas</p>
                 </div>
 
-                <div class="study-stats-container">
+                <div class="study-stats-container is-disabled">
                     <div class="stat-item-global stat--green">
                         <div class="stat-icon-global">
                             <i class="fas fa-clock"></i>
@@ -242,7 +242,7 @@
                     <h2 class="deck-section-title">¿A QUÉ QUIERES JUGAR HOY?</h2>
 
                     <div class="games-grid">
-                        <a class="game-card" data-js="go-game1" href="Juego1.html?deck=ingles">
+                        <a class="game-card" data-js="go-game1" href="Juego_1.html?deck=ingles">
                             <div class="game-card-center">
                                 <span class="game-icon">
                                     <i class="fas fa-grip-vertical"></i>
@@ -252,7 +252,7 @@
                             <span class="game-index">1</span>
                         </a>
 
-                        <a class="game-card" href="Juego_2.html">
+                        <a class="game-card" data-js="go-game2" href="Juego_2.html?deck=ingles">
                             <div class="game-card-center">
                                 <span class="game-icon">
                                     <i class="fas fa-feather"></i>
@@ -262,7 +262,7 @@
                             <span class="game-index">2</span>
                         </a>
 
-                        <a class="game-card" href="Juego_3.html">
+                        <div class="game-card is-disabled" href="Juego_3.html">
                             <div class="game-card-center">
                                 <span class="game-icon">
                                     <i class="fas fa-list-ol"></i>
@@ -270,7 +270,7 @@
                                 <span class="game-title">JUEGO 3</span>
                             </div>
                             <span class="game-index">3</span>
-                        </a>
+                        </div>
                     </div>
 
                     <!-- 
