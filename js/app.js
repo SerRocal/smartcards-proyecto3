@@ -98,6 +98,19 @@ console.log('App State Loaded:', appState);
 })();
 
 /* =====================================================
+  En Deck.html, ajustar el enlace "Jugar" para mantener ?deck=
+  ===================================================== */
+
+(function wireGameLinks() {
+    const deckId = getDeckIdFromURL();
+    if (!deckId) return;
+
+    const game1Link = document.querySelector('[data-js="go-game1"]');
+    if (game1Link) game1Link.setAttribute("href", `Juego_1.html?deck=${deckId}`);
+})();
+
+
+/* =====================================================
   DECK.html: renderizar tabla de tarjetas + pestañas (Items/Favoritas)
   - Pinta filas desde appState (no HTML “de mentira”)
   - Actualiza contador: ITEMS DEL MAZO (N)
