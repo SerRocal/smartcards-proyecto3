@@ -20,9 +20,7 @@ const AUTH_KEY = "smartcards-auth";
 })();
 
 /* =====================================================
-   ESTADO GLOBAL DE LA APLICACIÓN:
-   - Define la estructura de datos (decks y tarjetas)
-   - Gestiona carga y guardado en localStorage
+   ESTADO GLOBAL DE LA APLICACIÓN (localStorage)
    ===================================================== */
 
 const STORAGE_KEY = 'smartcards-state';
@@ -72,7 +70,7 @@ function saveState(state) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
-// Obtención del deck activo desde la URL -Helpers de navegación-
+// Obtención de ?deck= desde la URL
 function getDeckIdFromURL() {
     return new URLSearchParams(location.search).get("deck");
 }
@@ -140,7 +138,7 @@ console.log('App State Loaded:', appState);
 })();
 
 /* =====================================================
-  En Deck.html, ajustar el enlace "Jugar" para mantener ?deck=
+  Deck.html y Home.html: ajustar enlaces a juegos para mantener ?deck=
   ===================================================== */
 
 (function wireGameLinks() {
@@ -156,11 +154,7 @@ console.log('App State Loaded:', appState);
 
 
 /* =====================================================
-  DECK.html: renderizar tabla de tarjetas + pestañas (Items/Favoritas)
-  - Pinta filas desde appState (no HTML “de mentira”)
-  - Actualiza contador: ITEMS DEL MAZO (N)
-  - “Favoritas” (corazón) funcional
-  - Deshabilita botones no implementados (audio/abrir/editar)
+  DECK.html: render + toggle favorito + filtrado 
   ===================================================== */
 
 function getDeckIdOrDefault() {
@@ -169,7 +163,7 @@ function getDeckIdOrDefault() {
 
 function ensureCardFlags(deck) {
     if (!deck || !deck.cards) return;
-    // Unificamos: todas las tarjetas deben tener favorite y learnt
+    // Unificación favorite y learnt
     deck.cards = deck.cards.map((c) => ({
         favorite: false,
         learnt: false,
@@ -256,7 +250,7 @@ function wireDeckTable() {
 
     const deckId = getDeckIdOrDefault();
 
-    // Render inicial (esto también arregla “entro directo por Live Server sin ?deck” => usa ingles)
+    // Render inicial (en "Items del mazo")
     renderDeckTable(deckId, "all");
 
     // Tabs
@@ -308,7 +302,7 @@ function wireDeckTable() {
     const setTitleInput = document.querySelector('[data-js="set-title"]');
     const setDescInput = document.querySelector('[data-js="set-desc"]');
 
-    // Si no estamos en Add_card.html, salimos (evita tocar otras páginas)
+    // Si no hay elementos relevantes, salimos
     if (!titleEl && !subtitleEl && !backEl && !setTitleInput && !setDescInput) return;
 
     const deckId = getDeckIdFromURL();
@@ -341,7 +335,7 @@ function wireDeckTable() {
 
 /* =====================================================
    ADD_CARD: render + add + delete + save (localStorage)
-   Se activa solo si existe [data-js="cards-list"]
+   Solo si existe [data-js="cards-list"]
    ===================================================== */
 
 /* Utilidades Internas */
@@ -356,7 +350,7 @@ function updateDeckInState(deckId, patch) {
     appState.decks[deckId] = { ...appState.decks[deckId], ...patch };
 }
 
-/* Renderiza la página Add_card.html con las tarjetas del deck activo */
+/* Renderiza la página Add_card.html solo si existe [data-js="cards-list"] */
 function renderAddCardsPage() {
     const listEl = document.querySelector('[data-js="cards-list"]');
     if (!listEl) return; // no estamos en Add_card.html
@@ -377,7 +371,7 @@ function renderAddCardsPage() {
     const template = listEl.querySelector('.edit-card[data-card-id="__TEMPLATE__"]');
     if (!template) return;
 
-    // Limpieza: dejamos el template oculto (no se renderiza como tarjeta real)
+    // Limpieza (template oculto)
     template.style.display = "none";
 
     // Borra tarjetas renderizadas anteriores (excepto el template)
@@ -416,20 +410,20 @@ function getCardsFromDOM(listEl) {
     });
 }
 
-// Sincroniza las tarjetas del DOM al estado global (deck.cards)
-// Retorna las tarjetas actuales
-// Mantiene propiedades previas (favorite, etc.) al hacer merge
+// Sincroniza las tarjetas del DOM al estado global
+// Devuelve el array de tarjetas actualizado
+// (solo id/front/back)
 function syncCardsFromDOMToState(deckId, listEl) {
     const deck = getDeckById(deckId);
     if (!deck) return [];
 
-    // Mapa de tarjetas previas por id (para conservar favorite, etc.)
+    // Mapa de tarjetas previas por id
     const prevCardsById = new Map(deck.cards.map(c => [c.id, c]));
 
     // Tarjetas actuales leídas del DOM (solo id/front/back)
     const domCards = getCardsFromDOM(listEl);
 
-    // Merge: mantenemos propiedades previas y actualizamos front/back
+    // Merge prev + current
     const nextCards = domCards.map((c) => {
         const prev = prevCardsById.get(c.id) || {};
         return { ...prev, ...c };
@@ -446,8 +440,8 @@ function hasEmptyCard(cards) {
 }
 
 /* =====================================================
-   ADD_CARD: Delegación de eventos (un solo listener) para añadir, 
-   borrar y guardar tarjetas
+   ADD_CARD   
+   Conexión de eventos en Add_card.html
    ===================================================== */
 
 function wireAddCardsEvents() {
@@ -516,11 +510,10 @@ function wireAddCardsEvents() {
             saveBtn.classList.add("is-saved");
             saveBtn.textContent = "Guardado ✓";
 
-            // SALIDA CON DELAY
-            // Envolvemos el cambio de página en un setTimeout para dar tiempo al CSS
+            // Volver al deck tras 1 segundo
             setTimeout(() => {
                 location.href = `Deck.html?deck=${deckId}`;
-            }, 1000); // 1000 milisegundos = 1 segundo
+            }, 1000);
         });
     }
 }
@@ -543,8 +536,7 @@ function wireAddCardsEvents() {
 
 /* =====================================================
    BOTÓN RESET DEMO (en todas las páginas)
-   - Elimina el estado guardado en localStorage
-   - Recarga la página para restaurar el estado inicial
+    - Borra localStorage
    ===================================================== */
 
 (function wireResetDemo() {
@@ -561,11 +553,8 @@ function wireAddCardsEvents() {
 })();
 
 /* =====================================================
-  JUEGO 1 (Flashcards): flip + siguiente/anterior (sesión)
-  - Lee deck por ?deck= (fallback: ingles)
-  - Muestra front/back con flip al click
-  - Prev/Next + progreso X/N
-  - Si no hay tarjetas -> mensaje
+  JUEGO 1 (Flashcards)
+    - Render + lógica de juego
   ===================================================== */
 
 function getCompleteCards(deck) {
@@ -589,8 +578,7 @@ function renderGame1UI({ deck, cards, index, showBack }) {
 
     // Header + volver al mazo
     if (titleEl) titleEl.textContent = deck?.title || "Mazo";
-    // Subtítulo: mostramos TOTAL de tarjetas completas del mazo (sin contar learnt)
-    // y además cuántas quedan "pendientes" en este juego (las que hay en cards)
+    // Subtítulo: descripción + detalles
     if (subtitleEl) {
         const desc = deck?.description || "Sin descripción";
 
